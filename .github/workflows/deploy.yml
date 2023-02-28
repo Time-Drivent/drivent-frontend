@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Build and Deploy
+env:
+  REACT_APP_API_BASE_URL: /api
+jobs:
+  build:
+    runs-on: drivent
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: docker-compose build
+
+      - name: Run
+        run: docker-compose down && docker-compose up
