@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-export default function ModalityTicket({ setTicket }) {
+export default function ModalityTicket({ setTicket, setHasSelected }) {
   const [selected, setSelected] = useState(null);
   const selectedBox = (id) => {
     setSelected(id);
@@ -9,6 +9,7 @@ export default function ModalityTicket({ setTicket }) {
       setTicket({ text: 'Presencial', value: 250 });
     } else if (id === 2) {
       setTicket({ text: 'Online', value: 100 });
+      setHasSelected(false);
     }
   };
 

@@ -18,10 +18,11 @@ export function Confirmation({ price }) {
 
 const ConfirmationContainer = styled.div`
   color: #8E8E8E;
-  font-family: inherit;
+  font-family: 'Roboto';
   font-size: 20px;
   line-height: 23px;
-
+  margin-top: 40px;
+  
   div {
     margin-bottom: 10px;
   }
