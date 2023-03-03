@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import { Confirmation } from '../../../components/Payment/Confirmation';
 import NotRemoteOptions from '../../../components/Payment/NotRemote';
 import ModalityTicket from '../../../components/ticket-payment/modality-ticket';
 
 export default function Payment() {
   const [ticket, setTicket] = useState([]);
-  console.log(ticket);
+  const [hasHotel, setHasHotel] = useState(false);
+  const [hasSelected, setHasSelected] = useState(false);
+
   return (
     <>
       <Title>Ingresso e pagamento</Title>
 
-      <ModalityTicket setTicket={setTicket} />
-      {ticket.length !== 0 &&  <NotRemoteOptions />}
+      <ModalityTicket setTicket={setTicket} setHasSelected={setHasSelected} />
+      {ticket.text === 'Presencial' && <NotRemoteOptions hasHotel={hasHotel} setHasHotel={setHasHotel} hasSelected={hasSelected} setHasSelected={setHasSelected} />}
+      {(hasSelected || ticket.text === 'Online') && <Confirmation price={ticket.text === 'Online' ? 100 : (hasHotel ? 600 : 250)}/>}
     </>
   );
 }

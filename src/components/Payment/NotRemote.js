@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-export default function NotRemoteOptions() {
-  const [hasHotel, setHasHotel] = useState(false);
-  const [hasSelected, setHasSelected] = useState(false);
+export default function NotRemoteOptions({ hasHotel, setHasHotel, hasSelected, setHasSelected }) {
   const arr = [
     { text: 'Sem Hotel', value: 0 },
     { text: 'Com Hotel', value: 350 },
