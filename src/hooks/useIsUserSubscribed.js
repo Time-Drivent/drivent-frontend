@@ -1,13 +1,19 @@
 import { getPersonalInformations } from '../services/enrollmentApi';
+import useAsync from './useAsync';
 import useToken from './useToken';
 
-export default async function useIsUserSubscribed() {
+export default function useIsUserSubscribed() {
   const token = useToken();
 
-  try {
-    const response = await getPersonalInformations(token);
-    return response;
-  } catch (error) {
-    return undefined;
-  }
+  const {
+    loading: getUserLoading,
+    error: getUserError,
+    act: getUser
+  } = useAsync(() => getPersonalInformations(token), false);
+
+  return {
+    getUserLoading,
+    getUserError,
+    getUser
+  };
 }
