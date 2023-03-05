@@ -1,37 +1,33 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 
-export default function ModalityTicket({ setTicket, setHasSelected }) {
+export default function ModalityTicket({ setHasSelected, ticketTypes }) {
   const [selected, setSelected] = useState(null);
-  const selectedBox = (id) => {
-    setSelected(id);
-    if (id === 1) {
-      setTicket({ text: 'Presencial', value: 250 });
-    } else if (id === 2) {
-      setTicket({ text: 'Online', value: 100 });
-      setHasSelected(false);
-    }
+  const [ticket, setTicket] = useState([]);
+
+  useEffect(() => {
+    const modalities = ticketTypes
+      .filter((t) => t.isRemote || !t.includesHotel)
+      .map((t) => ({ text: t.isRemote ? 'Online' : 'Presencial', value: t.price, id: t.id }));
+    setTicket(() => modalities);
+  }, [ticketTypes]);
+
+  const selectedBox = (info) => {
+    setSelected(info.id);
+    setHasSelected(info);
   };
 
   return (
     <Container>
       <h1>Primeiro, escolha sua modalidade de ingresso</h1>
       <BoxOption>
-        <Box
-          selected={selected === 1}
-          onClick={() => selectedBox(1)}
-        >
-          <h1>Presencial</h1>
-          <h2>R$ 250</h2>
-        </Box>
-
-        <Box
-          selected={selected === 2}
-          onClick={() => selectedBox(2)}
-        >
-          <h1>Online</h1>
-          <h2>R$ 100</h2>
-        </Box>
+        {ticket.map((info, i) => (
+          <Box key={i + 1} selected={selected === info.id} onClick={() => selectedBox(info)}>
+            <h1>{info.text}</h1>
+            <h2>R$ {info.value}</h2>
+          </Box>
+        ))}
       </BoxOption>
     </Container>
   );
@@ -46,7 +42,6 @@ const Container = styled.div`
     font-weight: 400;
     font-size: 20px;
     color: #8e8e8e;
-    
   }
   gap: 16px;
   margin-bottom: 44px;
@@ -85,4 +80,3 @@ const Box = styled.div`
     cursor: pointer;
   }
 `;
-

@@ -3,13 +3,15 @@ import { useState, useEffect } from 'react';
 import { Confirmation } from '../../../components/Payment/Confirmation';
 import NotRemoteOptions from '../../../components/Payment/NotRemote';
 import ModalityTicket from '../../../components/ticket-payment/modality-ticket';
-import { Typography } from '@material-ui/core';
 import useIsUserSubscribed from '../../../hooks/useIsUserSubscribed';
 import MessageContainer from '../../../components/MessageContainer';
+import { useTicketTypes } from '../../../hooks/api/useTicketType';
+import useTicket from '../../../hooks/api/useTicket';
 
 export default function Payment() {
   const [accessDenied, setAccessDenied] = useState(true);
-  const isUserSubscribed = useIsUserSubscribed();
+  const { getUser, getUserLoading } = useIsUserSubscribed();
+  const { getTicket, getTicketLoading } = useTicket();
   const messageContainerPhrases = [
     'Você precisa completar sua inscrição antes',
     'de prosseguir pra escolha de ingresso',
@@ -17,34 +19,54 @@ export default function Payment() {
   const [ticket, setTicket] = useState([]);
   const [hasHotel, setHasHotel] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
+  const { ticketType, ticketTypeLoading } = useTicketTypes();
+  const [paymentPage, setPaymentPage] = useState(false);
 
-  useEffect(() => {
-    isUserSubscribed.then((res) => {
-      if (res !== undefined) setAccessDenied(() => false);
-    });
-  }, [isUserSubscribed]);
+  async function isTicketReserved() {
+    const ticket = await getTicket();
+    if (ticket) setPaymentPage(true);
+  }
+
+  useEffect(async() => {
+    try {
+      const response = await getUser();
+      if (response !== undefined) setAccessDenied(() => false);
+
+      const ticket = await ticketType();
+      setTicket(() => ticket);
+
+      await isTicketReserved();
+    } catch(error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <>
       <Title>Ingresso e pagamento</Title>
-      {accessDenied ? (
+      { !paymentPage ? (  !ticketTypeLoading && !getUserLoading && !getTicketLoading && (accessDenied ? (
         <MessageContainer phrases={messageContainerPhrases} />
       ) : (
         <>
-          <ModalityTicket setTicket={setTicket} setHasSelected={setHasSelected} />
-          {ticket.text === 'Presencial' && (
+          <ModalityTicket ticketTypes={ticket} setHasSelected={setHasSelected} />
+          {(hasSelected.text === 'Presencial' || hasSelected.text === 'Sem Hotel' || hasSelected.text === 'Com Hotel') && (
             <NotRemoteOptions
+              ticketTypes={ticket}
+              setHasSelected={setHasSelected}
               hasHotel={hasHotel}
               setHasHotel={setHasHotel}
               hasSelected={hasSelected}
-              setHasSelected={setHasSelected}
             />
           )}
-          {(hasSelected || ticket.text === 'Online') && (
-            <Confirmation price={ticket.text === 'Online' ? 100 : hasHotel ? 600 : 250} />
+          {(hasSelected.text === 'Online' || hasSelected.text === 'Sem Hotel' || hasSelected.text === 'Com Hotel') && (
+            <Confirmation
+              ticketTypeId={hasSelected.id}
+              price={ticket.filter((t) => t.id === hasSelected.id)[0].price}
+              setPaymentPage={setPaymentPage}
+            />
           )}
         </>
-      )}
+      ))) : 'Area de pagamento em breve' } 
     </>
   );
 }
@@ -56,8 +78,4 @@ const Title = styled.div`
   color: #000000;
   font-family: 'Roboto', sans-serif;
   padding-bottom: 37px;
-`;
-
-const StyledTypography = styled(Typography)`
-  margin-bottom: 20px !important;
 `;

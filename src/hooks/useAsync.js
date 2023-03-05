@@ -33,6 +33,6 @@ export default function useAsync(handler, immediate = true) {
     data,
     loading,
     error,
-    act
+    act,
   };
 }

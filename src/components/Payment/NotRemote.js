@@ -1,24 +1,38 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-export default function NotRemoteOptions({ hasHotel, setHasHotel, hasSelected, setHasSelected }) {
-  const arr = [
-    { text: 'Sem Hotel', value: 0 },
-    { text: 'Com Hotel', value: 350 },
-  ];
+export default function NotRemoteOptions({ hasHotel, setHasHotel, hasSelected, setHasSelected, ticketTypes }) {
+  const [ticket, setTicket] = useState([]);
+  const optionSelected = useState(false);
+  useEffect(() => {
+    let noHotelPrice = 0;
+    const modalities = ticketTypes
+      .filter((t) => !t.isRemote)
+      .map((t) => {
+        if (!t.includesHotel) noHotelPrice = t.price;
+        return {
+          text: t.includesHotel ? 'Com Hotel' : 'Sem Hotel',
+          value: t.includesHotel ? t.price : 0,
+          id: t.id,
+        };
+      })
+      .map((t) => (t.text === 'Com Hotel' ? { ...t, value: t.value - noHotelPrice } : t));
+    setTicket(() => modalities);
+  }, [ticketTypes]);
+
   return (
     <Container>
       <h1>Ótimo! Agora escolha sua modalidade de hospedagem</h1>
       <OptionsContainer>
-        {arr.map((item, index) => (
+        {ticket.map((item, index) => (
           <OptionBox
             key={index}
-            text={item.text}
-            value={item.value}
+            info={item}
             hasHotel={hasHotel}
             setHasHotel={setHasHotel}
             hasSelected={hasSelected}
             setHasSelected={setHasSelected}
+            selected={optionSelected}
           ></OptionBox>
         ))}
       </OptionsContainer>
@@ -74,26 +88,20 @@ const Option = styled.div`
   }
 `;
 
-function OptionBox({ text, value, hasHotel, setHasHotel, hasSelected, setHasSelected }) {
-  const [isSelected, setSelected] = useState(false);
+function OptionBox({ info, hasHotel, setHasHotel, hasSelected, setHasSelected }) {
   function handleSelection() {
-    if (!hasSelected || (value && !hasHotel) || (!value && hasHotel)) {
-      setSelected(true);
-      setHasSelected(true);
-      if (!value) {
-        setHasHotel(false);
-      } else {
-        setHasHotel(true);
-      }
+    setHasSelected(info);
+    if (info.text === 'Com Hotel') {
+      setHasHotel(false);
+    } else {
+      setHasHotel(true);
     }
   }
-  useEffect(() => {
-    if ((value && !hasHotel) || (!value && hasHotel)) setSelected(false);
-  }, [hasSelected, hasHotel]);
+
   return (
-    <Option isSelected={isSelected} onClick={handleSelection}>
-      <h1>{text}</h1>
-      <h2>+ R$ {value}</h2>
+    <Option isSelected={hasSelected?.text === info.text} onClick={handleSelection}>
+      <h1>{info.text}</h1>
+      <h2>+ R$ {info.value}</h2>
     </Option>
   );
 }
