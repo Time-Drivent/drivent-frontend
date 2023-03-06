@@ -27,7 +27,7 @@ export default function Payment() {
   async function isTicketReserved() {
     const ticket = await getTicket();
     if (ticket) {
-      setPaymentPage(false);
+      setPaymentPage(true);
       setTicketId(ticket.id);
     }
   }
