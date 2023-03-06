@@ -7,6 +7,7 @@ import useIsUserSubscribed from '../../../hooks/useIsUserSubscribed';
 import MessageContainer from '../../../components/MessageContainer';
 import { useTicketTypes } from '../../../hooks/api/useTicketType';
 import useTicket from '../../../hooks/api/useTicket';
+import PaymentComponent  from '../../../components/Payment/Card';
 
 export default function Payment() {
   const [accessDenied, setAccessDenied] = useState(true);
@@ -16,15 +17,15 @@ export default function Payment() {
     'Você precisa completar sua inscrição antes',
     'de prosseguir pra escolha de ingresso',
   ];
-  const [ticket, setTicket] = useState([]);
-  const [hasHotel, setHasHotel] = useState(false);
-  const [hasSelected, setHasSelected] = useState(false);
+  const [ ticket, setTicket ] = useState([]);
+  const [ hasHotel, setHasHotel ] = useState(false);
+  const [ hasSelected, setHasSelected ] = useState(false);
   const { ticketType, ticketTypeLoading } = useTicketTypes();
-  const [paymentPage, setPaymentPage] = useState(false);
+  const [ paymentPage, setPaymentPage ] = useState(false);
 
   async function isTicketReserved() {
     const ticket = await getTicket();
-    if (ticket) setPaymentPage(true);
+    if (ticket) setPaymentPage(false);
   }
 
   useEffect(async() => {
@@ -37,6 +38,7 @@ export default function Payment() {
 
       await isTicketReserved();
     } catch(error) {
+      // eslint-disable-next-line no-console
       console.log(error);
     }
   }, []);
@@ -66,7 +68,13 @@ export default function Payment() {
             />
           )}
         </>
-      ))) : 'Area de pagamento em breve' } 
+      ))) :
+        <PaymentComponent
+          ticketTypeId={hasSelected.id}
+          ticket={ticket}
+          price={ticket.filter((t) => t.id === hasSelected.id)[0]}
+          getTicket={getTicket}
+        /> }
     </>
   );
 }
