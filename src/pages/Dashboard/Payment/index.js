@@ -18,6 +18,7 @@ export default function Payment() {
     'de prosseguir pra escolha de ingresso',
   ];
   const [ ticket, setTicket ] = useState([]);
+  const [ ticketId, setTicketId ] = useState(undefined);
   const [ hasHotel, setHasHotel ] = useState(false);
   const [ hasSelected, setHasSelected ] = useState(false);
   const { ticketType, ticketTypeLoading } = useTicketTypes();
@@ -25,7 +26,10 @@ export default function Payment() {
 
   async function isTicketReserved() {
     const ticket = await getTicket();
-    if (ticket) setPaymentPage(false);
+    if (ticket) {
+      setPaymentPage(false);
+      setTicketId(ticket.id);
+    }
   }
 
   useEffect(async() => {
@@ -72,6 +76,7 @@ export default function Payment() {
         <PaymentComponent
           ticketTypeId={hasSelected.id}
           ticket={ticket}
+          ticketId={ticketId}
           price={ticket.filter((t) => t.id === hasSelected.id)[0]}
           getTicket={getTicket}
         /> }

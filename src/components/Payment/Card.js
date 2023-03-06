@@ -11,7 +11,7 @@ import { IoCheckmarkCircleSharp } from 'react-icons/io5';
 import { useTicketTypes } from '../../hooks/api/useTicketType';
 import useEnrollment from '../../hooks/api/useEnrollment';
 
-export default function PaymentComponent({ ticket, getTicket, price, ticketTypeId }) {
+export default function PaymentComponent({ ticket, ticketId, getTicket, price, ticketTypeId }) {
   const { enrollment } = useEnrollment();
   const { savePayment } = useSavePayment();
   const { ticketTypes } = useTicketTypes();
@@ -50,7 +50,7 @@ export default function PaymentComponent({ ticket, getTicket, price, ticketTypeI
         number.length !== 16) {
         return toast('Dados do cartão incorreto!');
       }
-      await savePayment(ticketTypeId, cardData);
+      await savePayment(ticketId, cardData);
       resetForm();
       setPay(true);
       toast('Pagamento feito com sucesso!');
