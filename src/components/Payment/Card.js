@@ -72,7 +72,7 @@ export default function PaymentComponent({ ticket, ticketId, getTicket, price, t
         <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>Ingresso escolhido</SubTitle>
 
         <TicketWrapper>
-          <Info variant="subtitle1"></Info>
+          <Info variant="subtitle1">{price.name}</Info>
           <Info variant="subtitle1" color="textSecondary">
             R$ {totalPrice
             }
