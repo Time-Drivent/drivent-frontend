@@ -35,7 +35,7 @@ export default function Timer({ time, onZero = () => 0 }) {
   return (
     <Grid>
       <CountdownBlock>
-        {timeRemaining.days.toString().padStart(2, '0')}
+        {timeRemaining.days.toString().padStart(2, '0') <= '-1' ? '0' : timeRemaining.days.toString().padStart(2, '0') }
         <Label>dias</Label>
       </CountdownBlock>
       <Divider>:</Divider>
@@ -95,23 +95,19 @@ const Divider = styled.div`
 
 function diffToDate(date) {
   const now = dayjs();
-  let to = dayjs(date);
+  const to = dayjs(date);
 
-  const days = to.diff(now, 'days');
-  to = to.add(-days, 'days');
+  const diff = to.diff(now);
 
-  const hours = to.diff(now, 'hours');
-  to = to.add(-hours, 'hours');
-
-  const minutes = to.diff(now, 'minutes');
-  to = to.add(-minutes, 'minutes');
-
-  const seconds = to.diff(now, 'seconds');
+  const days = Math.max(0, Math.floor(diff / 86400000));
+  const hours = Math.max(0, Math.floor((diff % 86400000) / 3600000));
+  const minutes = Math.max(0, Math.floor((diff % 3600000) / 60000));
+  const seconds = Math.max(0, Math.floor((diff % 60000) / 1000));
 
   return {
     days,
     hours,
     minutes,
-    seconds
+    seconds,
   };
 }
