@@ -8,29 +8,29 @@ import useSavePayment from '../../hooks/api/useSavePayment.js';
 import { toast } from 'react-toastify';
 import { IconContext } from 'react-icons';
 import { IoCheckmarkCircleSharp } from 'react-icons/io5';
-import { useTicketTypes } from '../../hooks/api/useTicketType';
-import useEnrollment from '../../hooks/api/useEnrollment';
 
-export default function PaymentComponent({ ticket, ticketId, getTicket, price, ticketTypeId }) {
-  const { enrollment } = useEnrollment();
+export default function PaymentComponent({ ticketInfo, getTicket, price }) {
   const { savePayment } = useSavePayment();
-  const { ticketTypes } = useTicketTypes();
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
-  const [totalPrice, setTotalPrice] = useState(0);
   const [pay, setPay] = useState(false);
+  const [ticketId, setTicketId] = useState(undefined);
 
   useEffect(async() => {
     try {
-      setTotalPrice(ticket[ticketTypeId- 1].price);
-    } catch (error) {
-      // eslint-disable-next-line
-      console.log(error.message);
-    }   
-  }, [ticketTypes]);
+      const ticket = await getTicket();
+      if (ticket.status === 'PAID') {
+        setPay(true);
+      }
+      setTicketId(ticket.id);
+    } catch(error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -41,8 +41,7 @@ export default function PaymentComponent({ ticket, ticketId, getTicket, price, t
       issuer: name,
       number,
     };
-    // eslint-disable-next-line no-console
-    console.log(cardData, ticket, enrollment, price, ticketTypeId);
+
     try {
       if (cvc.length !== 3 || 
         (expiry.length < 4 || expiry.length > 5) ||
@@ -72,10 +71,9 @@ export default function PaymentComponent({ ticket, ticketId, getTicket, price, t
         <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>Ingresso escolhido</SubTitle>
 
         <TicketWrapper>
-          <Info variant="subtitle1">{price.name}</Info>
+          <Info variant="subtitle1">{ticketInfo ? ticketInfo.TicketType.name : price.name}</Info>
           <Info variant="subtitle1" color="textSecondary">
-            R$ {totalPrice
-            }
+            R$ {ticketInfo ? ticketInfo.TicketType.price : price.price}
           </Info>
         </TicketWrapper>
 
