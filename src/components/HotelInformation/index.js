@@ -48,6 +48,7 @@ const RoomList = styled.ul`
 
   div {
     display: flex;
-    margin-top: 30px;
+    margin-top: 15px;
+    flex-wrap: wrap;
   }
 `;
