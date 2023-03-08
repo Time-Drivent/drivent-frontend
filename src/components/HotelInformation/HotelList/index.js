@@ -5,7 +5,7 @@ export default function HotelList({ hotels, selected, handleSelect }) {
   return <>
     <Title>Primeiro, escolha seu hotel</Title>
     <ContainerHotelList>
-      { hotels.map((hotel, i) => <HotelItem key={hotel.id} selected={selected} handleSelect={() => handleSelect(hotel.id)} info={hotel} />) }
+      { hotels.map((hotel, i) => <HotelItem key={hotel.id} selected={selected} handleSelect={() => handleSelect(hotel.id, hotel.Rooms)} info={hotel} />) }
     </ContainerHotelList>
   </>;
 }
