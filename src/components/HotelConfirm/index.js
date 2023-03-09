@@ -5,8 +5,7 @@ import useBooking from '../../hooks/api/useBooking';
 import { getUserBooking } from '../../services/bookingApi';
 import Hotel from '../../pages/Dashboard/Hotel';
 
-export default function HotelConfirm({ hotelId, setLoadBrief, loadBrief }) {
-  const [booking, setbooking] = useState({});
+export default function HotelConfirm({ booking, setbooking }) {
   const [hotel, setHotel] = useState({});
   const { userData } = useContext(UserContext);
   const token = userData.token;

@@ -8,6 +8,7 @@ import useTicket from '../../../hooks/api/useTicket';
 import HotelConfirm from '../../../components/HotelConfirm';
 
 export default function Hotel() {
+  const [booking, setbooking] = useState({});
   const messageContainerPhrases = {
     noPayment: ['Você precisa ter confirmado pagamento antes', 'de fazer a escolha de hospedagem'],
     noHotel: ['Sua modalidade de ingresso não inclui hospedagem', 'Prossiga para a escolha de atividades'],
@@ -39,9 +40,9 @@ export default function Hotel() {
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-
-      {/* <HotelInformation /> */}
-      <HotelConfirm />
+      {!booking ? <HotelInformation /> :
+        <HotelConfirm booking={booking} setbooking={setbooking} />
+      }
     </>
   );
 }
