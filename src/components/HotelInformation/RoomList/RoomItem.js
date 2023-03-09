@@ -1,21 +1,18 @@
 import styled from 'styled-components';
 import { BsPerson, BsPersonFill } from 'react-icons/bs';
-import { useState } from 'react';
 
-export function Room({ capacity, id, name, roomIdselected, setRoomIdSelected }) {
-  const [clicked, setClicked] = useState(false);
-
+export function RoomItem({ bookings, capacity, id, name, roomIdselected, setRoomIdSelected }) {
   function handleClick() {
     setRoomIdSelected(id);
-    setClicked(true);
   }
 
   return (
-    <RoomButton onClick={handleClick}>
+    <RoomButton clicked={roomIdselected === id} disabled={capacity === bookings} onClick={handleClick}>
       {name}
       <span>
-        {(roomIdselected === id && clicked) ? Array(capacity - 1).fill(<Vacancy />) : Array(capacity).fill(<Vacancy />)}
-        {roomIdselected === id && clicked && <RoomSelected />}
+        {Array(capacity - bookings - (roomIdselected === id ? 1 : 0)).fill(<Vacancy />)}
+        {(roomIdselected === id) && <RoomSelected />}
+        {Array(bookings).fill(<RoomBooked />)}
       </span>
     </RoomButton>
   );
@@ -23,7 +20,7 @@ export function Room({ capacity, id, name, roomIdselected, setRoomIdSelected }) 
 
 const RoomButton = styled.button`
   align-items: center;
-  background-color: #FFFFFF;
+  background-color: ${({ clicked }) => clicked ? '#FFEED2' : '#FFFFFF'};
   border: 1px solid #CECECE;
   border-radius: 10px;
   color: #000000;
@@ -38,8 +35,14 @@ const RoomButton = styled.button`
   padding: 0 10px;
   width: 190px;
 
-  :focus {
-    background-color: #FFEED2;
+  :disabled {
+    background-color: #E9E9E9;
+    color: #9D9D9D;
+    cursor: auto;
+
+    * {
+      color: #8C8C8C;
+    }
   }
 `;
 
@@ -49,5 +52,10 @@ const Vacancy = styled(BsPerson)`
 
 const RoomSelected = styled(BsPersonFill)`
   color: #FF4791;  
+  font-size: 26px;
+`;
+
+const RoomBooked = styled(BsPersonFill)`
+  color: #000000;  
   font-size: 26px;
 `;
