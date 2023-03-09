@@ -54,7 +54,7 @@ function HotelItem({ handleSelect, info, selected }) {
     </div>
     <div>
       <h3>Vagas disponíveis:</h3>
-      <span>{ info.Rooms.reduce((prev, curr) => prev + curr.capacity, 0) }</span>
+      <span>{ info.Rooms.reduce((prev, curr) => prev + curr.capacity - curr._count.Booking, 0) }</span>
     </div>
   </ContainerHotelItem>;
 }
