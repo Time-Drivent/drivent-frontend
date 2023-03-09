@@ -34,7 +34,7 @@ const RoomButton = styled.button`
   font-weight: 700;
   height: 45px;
   justify-content: space-between;
-  margin: 15px 17px 0 0;
+  margin: 8px 17px 0 0;
   padding: 0 10px;
   width: 190px;
 

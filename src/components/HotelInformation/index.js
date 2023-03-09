@@ -3,6 +3,9 @@ import useHotel from '../../hooks/api/useHotel';
 import HotelList from './HotelList';
 import { Room } from './Room';
 import styled from 'styled-components';
+import Button from '../Form/Button';
+import useSaveBooking from '../../hooks/api/useSaveBooking';
+import { toast } from 'react-toastify';
 
 export default function HotelInformation() {
   const { hotels } = useHotel();
@@ -10,10 +13,21 @@ export default function HotelInformation() {
   const [hotelIdselected, sethotelIdSelected] = useState(0);
   const [rooms, setRooms] = useState([]);
   const [roomIdselected, setRoomIdSelected] = useState(0);
+  const { saveBooking, saveBookingLoading } = useSaveBooking();
 
   function handleSelect(id, rooms) {
     sethotelIdSelected(() => id);
     setRooms(rooms);
+    setRoomIdSelected(0);
+  }
+
+  async function handleSubmit() {
+    try {
+      await saveBooking({ roomId: roomIdselected });
+      toast('Reserva feita com sucesso');
+    } catch (error) {
+      toast('Ocorreu um erro ao reservar o quarto');
+    }
   }
 
   useEffect(async() => {
@@ -37,6 +51,13 @@ export default function HotelInformation() {
         </RoomList> :
         ''
     }
+    {
+      roomIdselected ?
+        <Button type="submit" disabled={saveBookingLoading} onClick={handleSubmit}>
+          RESERVAR QUARTO
+        </Button> :
+        ''
+    }
   </>;
 }
 
@@ -44,7 +65,7 @@ const RoomList = styled.ul`
   color: #8E8E8E;
   font-family: 'Roboto';
   font-size: 18px;
-  margin-top: 50px;
+  margin: 50px 0 45px 0;
 
   div {
     display: flex;
