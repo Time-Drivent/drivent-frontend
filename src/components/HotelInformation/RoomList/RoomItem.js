@@ -10,9 +10,9 @@ export function RoomItem({ bookings, capacity, id, name, roomIdselected, setRoom
     <RoomButton clicked={roomIdselected === id} disabled={capacity === bookings} onClick={handleClick}>
       {name}
       <span>
-        {Array(capacity - bookings - (roomIdselected === id ? 1 : 0)).fill(<Vacancy />)}
+        {Array(capacity - bookings - (roomIdselected === id ? 1 : 0)).fill().map((_, i) => <Vacancy key={i} />)}
         {(roomIdselected === id) && <RoomSelected />}
-        {Array(bookings).fill(<RoomBooked />)}
+        {Array(bookings).fill().map((_, i) => <RoomBooked key={i} />)}
       </span>
     </RoomButton>
   );
