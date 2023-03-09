@@ -5,6 +5,7 @@ import HotelInformation from '../../../components/HotelInformation';
 import MessageContainer from '../../../components/MessageContainer';
 import { toast } from 'react-toastify';
 import useTicket from '../../../hooks/api/useTicket';
+import HotelConfirm from '../../../components/HotelConfirm';
 
 export default function Hotel() {
   const messageContainerPhrases = {
@@ -26,7 +27,7 @@ export default function Hotel() {
   }, []);
   return (
     <>
-      <StyledTypography variant='h4'>Escolha de hotel e quarto</StyledTypography> 
+      <StyledTypography variant='h4'>Escolha de hotel e quarto</StyledTypography>
       {ticket.noTicket ? (
         <MessageContainer phrases={messageContainerPhrases.noTicket} />
       ) : ticket.status === 'PAID' ? (
@@ -38,9 +39,9 @@ export default function Hotel() {
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-  
-      <HotelInformation />
 
+      {/* <HotelInformation /> */}
+      <HotelConfirm />
     </>
   );
 }
