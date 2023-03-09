@@ -22,7 +22,9 @@ export default function NavigationBar() {
   }
   function Logout() {
     try {
-      setUserData();
+      const newUserData = {};
+      setUserData(newUserData);
+      localStorage.setItem('userData', JSON.stringify(newUserData));
       navigate('/sign-in');
       toast('Logout realizado com sucesso!');
     } catch (error) {
@@ -66,8 +68,8 @@ export default function NavigationBar() {
           <span>Certificado</span>
         </NavigationButton>
       </Link>
-      <Link to="/sign-in">
-        <NavigationButton onClick={Logout} active={isActive('/')}>
+      <Link onClick={Logout} to="/sign-in">
+        <NavigationButton active={isActive('/')}>
           <FaPowerOff />
           <span>Logout</span>
         </NavigationButton>
@@ -89,8 +91,17 @@ const Container = styled.div`
   align-items: center;
   > a {
     text-decoration: none;
+    @media (max-width: 400px) {
+    width: 70px;
+    height: 80px;
+    flex-direction: row;
   }
-
+  @media (max-width: 350px) {
+    width: 50px;
+    height: 80px;
+    flex-direction: row;
+  }
+  }
   @media (max-width: 600px) {
     width: 100%;
     height: 80px;

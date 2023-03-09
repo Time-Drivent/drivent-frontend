@@ -41,11 +41,11 @@ export default function SignIn() {
             token: token,
             user: { 
               email: resultado.user.email, 
-              password: token
+              id: resultado.user.uid
             }
           });
-          await signUp(resultado.user.email, token );
-          await signIn( resultado.user.email, token );
+          // await signUp(resultado.user.email, token );
+          // await signIn( resultado.user.email, token );
           navigate('/dashboard');
           toast('Login realizado com sucesso!');
         }).catch((error) => {
