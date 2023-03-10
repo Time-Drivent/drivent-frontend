@@ -1,15 +1,11 @@
 import styled from 'styled-components';
 
 export default function NavigationButton({ active, children }) {
-  return (
-    <Button active={active}>
-      {children}
-    </Button>
-  );
+  return <Button active={active}>{children}</Button>;
 }
 
 const Button = styled.button`
-  width: 100%;
+  width: 100px;
   height: 100px;
   border: none;
   background-color: transparent;
@@ -19,7 +15,7 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  ${props => props.active ? 'background-color: #ccc;' : ''}
+  ${(props) => (props.active ? 'background-color: #ccc;' : '')}
 
   &:hover {
     background-color: #ccc;
@@ -36,5 +32,6 @@ const Button = styled.button`
 
   @media (max-width: 600px) {
     height: 80px;
+    width: 80px;
   }
 `;

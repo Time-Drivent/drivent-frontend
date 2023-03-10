@@ -2,14 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import styled from 'styled-components';
 import UserContext from '../../../contexts/UserContext';
-import {
-  FaFileContract,
-  FaMoneyBill,
-  FaBed,
-  FaCalendarWeek,
-  FaCertificate,
-  FaPowerOff,
-} from 'react-icons/fa';
+import { FaFileContract, FaMoneyBill, FaBed, FaCalendarWeek, FaCertificate, FaPowerOff } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import NavigationButton from './NavigationButton';
 
@@ -82,7 +75,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #ddd;
-  box-shadow: 2px 0 10px 0 rgba(0,0,0,0.1);
+  box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.1);
   width: 100px;
   flex-shrink: 0;
   display: flex;
@@ -92,15 +85,17 @@ const Container = styled.div`
   > a {
     text-decoration: none;
     @media (max-width: 400px) {
-    width: 70px;
-    height: 80px;
-    flex-direction: row;
+      height: 80px;
+      flex-direction: row;
+    }
+    @media (max-width: 350px) {
+      height: 80px;
+      flex-direction: row;
+    }
   }
-  @media (max-width: 350px) {
-    width: 50px;
-    height: 80px;
-    flex-direction: row;
-  }
+  @media (max-width: 480px) {
+    overflow-x: scroll;
+    justify-content: flex-start;
   }
   @media (max-width: 600px) {
     width: 100%;
