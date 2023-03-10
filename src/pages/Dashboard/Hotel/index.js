@@ -43,23 +43,29 @@ export default function Hotel() {
 
   return (
     <>
-      <StyledTypography variant='h4'>Escolha de hotel e quarto</StyledTypography>
+      <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
       {ticket.noTicket ? (
         <MessageContainer phrases={messageContainerPhrases.noTicket} />
       ) : ticket.status === 'PAID' ? (
         ticket.TicketType.includesHotel ? (
-          <></>
+          !booking || change ? (
+            <HotelInformation
+              booking={booking}
+              change={change}
+              changed={changed}
+              setBooked={setBooked}
+              setChange={setChange}
+              setChanged={setChanged}
+            />
+          ) : (
+            <HotelConfirm booking={booking} setChange={setChange} />
+          )
         ) : (
           <MessageContainer phrases={messageContainerPhrases.noHotel} />
         )
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-      {
-        (!booking || change) ?
-          <HotelInformation booking={booking} change={change} changed={changed} setBooked={setBooked} setChange={setChange} setChanged={setChanged} />
-          : <HotelConfirm booking={booking} setChange={setChange} />
-      }
     </>
   );
 }
