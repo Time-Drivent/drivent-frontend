@@ -12,9 +12,18 @@ export default function useBooking() {
     act: booking
   } = useAsync(() => bookingApi.getBooking(token), false);
 
+  const {
+    loading: UserbookingLoading,
+    error: UserbookingError,
+    act: Userbooking
+  } = useAsync(() => bookingApi.getUserBooking(token), false);
+
   return {
     bookingLoading,
     bookingError,
-    booking
+    booking,
+    UserbookingLoading,
+    UserbookingError,
+    Userbooking
   };
 }
