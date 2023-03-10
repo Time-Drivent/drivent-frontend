@@ -5,8 +5,10 @@ import HotelInformation from '../../../components/HotelInformation';
 import MessageContainer from '../../../components/MessageContainer';
 import { toast } from 'react-toastify';
 import useTicket from '../../../hooks/api/useTicket';
+import HotelConfirm from '../../../components/HotelConfirm';
 
 export default function Hotel() {
+  const [booking, setbooking] = useState({});
   const messageContainerPhrases = {
     noPayment: ['Você precisa ter confirmado pagamento antes', 'de fazer a escolha de hospedagem'],
     noHotel: ['Sua modalidade de ingresso não inclui hospedagem', 'Prossiga para a escolha de atividades'],
@@ -26,7 +28,7 @@ export default function Hotel() {
   }, []);
   return (
     <>
-      <StyledTypography variant='h4'>Escolha de hotel e quarto</StyledTypography> 
+      <StyledTypography variant='h4'>Escolha de hotel e quarto</StyledTypography>
       {ticket.noTicket ? (
         <MessageContainer phrases={messageContainerPhrases.noTicket} />
       ) : ticket.status === 'PAID' ? (
@@ -38,9 +40,9 @@ export default function Hotel() {
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-  
-      <HotelInformation />
-
+      {!booking ? <HotelInformation /> :
+        <HotelConfirm booking={booking} setbooking={setbooking} />
+      }
     </>
   );
 }
