@@ -23,7 +23,8 @@ export default function Hotel() {
   const { getTicket } = useTicket();
   const { userData } = useContext(UserContext);
   const token = userData.token;
-  
+  const [isLoading, setLoading] = useState(true);
+
   useEffect(() => {
     getUserBooking(token).then((res) => {
       setBooking(res);
@@ -39,32 +40,37 @@ export default function Hotel() {
       if (error.response.status === 404) setTicket({ noTicket: true });
       toast('Não foi possível encontrar as informações do seu Ticket');
     }
+    setLoading(false);
   }, []);
 
   return (
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
-      {ticket.noTicket ? (
-        <MessageContainer phrases={messageContainerPhrases.noTicket} />
-      ) : ticket.status === 'PAID' ? (
-        ticket.TicketType.includesHotel ? (
-          !booking || change ? (
-            <HotelInformation
-              booking={booking}
-              change={change}
-              changed={changed}
-              setBooked={setBooked}
-              setChange={setChange}
-              setChanged={setChanged}
-            />
+      {!isLoading ? (
+        ticket.noTicket ? (
+          <MessageContainer phrases={messageContainerPhrases.noTicket} />
+        ) : ticket.status === 'PAID' ? (
+          ticket.TicketType.includesHotel ? (
+            !booking || change ? (
+              <HotelInformation
+                booking={booking}
+                change={change}
+                changed={changed}
+                setBooked={setBooked}
+                setChange={setChange}
+                setChanged={setChanged}
+              />
+            ) : (
+              <HotelConfirm booking={booking} setChange={setChange} />
+            )
           ) : (
-            <HotelConfirm booking={booking} setChange={setChange} />
+            <MessageContainer phrases={messageContainerPhrases.noHotel} />
           )
         ) : (
-          <MessageContainer phrases={messageContainerPhrases.noHotel} />
+          <MessageContainer phrases={messageContainerPhrases.noPayment} />
         )
       ) : (
-        <MessageContainer phrases={messageContainerPhrases.noPayment} />
+        <></>
       )}
     </>
   );

@@ -7,7 +7,7 @@ import useIsUserSubscribed from '../../../hooks/useIsUserSubscribed';
 import MessageContainer from '../../../components/MessageContainer';
 import { useTicketTypes } from '../../../hooks/api/useTicketType';
 import useTicket from '../../../hooks/api/useTicket';
-import PaymentComponent  from '../../../components/Payment/Card';
+import PaymentComponent from '../../../components/Payment/Card';
 
 export default function Payment() {
   const [accessDenied, setAccessDenied] = useState(true);
@@ -17,12 +17,13 @@ export default function Payment() {
     'Você precisa completar sua inscrição antes',
     'de prosseguir pra escolha de ingresso',
   ];
-  const [ ticket, setTicket ] = useState([]);
-  const [ ticketInfo, setTicketInfo ] = useState(undefined);
-  const [ hasHotel, setHasHotel ] = useState(false);
-  const [ hasSelected, setHasSelected ] = useState(false);
+  const [ticket, setTicket] = useState([]);
+  const [ticketInfo, setTicketInfo] = useState(undefined);
+  const [hasHotel, setHasHotel] = useState(false);
+  const [hasSelected, setHasSelected] = useState(false);
   const { ticketType, ticketTypeLoading } = useTicketTypes();
-  const [ paymentPage, setPaymentPage ] = useState(false);
+  const [paymentPage, setPaymentPage] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   async function isTicketReserved() {
     const ticket = await getTicket();
@@ -32,7 +33,8 @@ export default function Payment() {
     }
   }
 
-  useEffect(async() => {
+  // eslint-disable-next-line space-before-function-paren
+  useEffect(async () => {
     try {
       const response = await getUser();
       if (response !== undefined) setAccessDenied(() => false);
@@ -41,43 +43,58 @@ export default function Payment() {
       setTicket(() => ticket);
 
       await isTicketReserved();
-    } catch(error) {
+    } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
     }
+    setLoading(false);
   }, []);
 
   return (
     <>
       <Title>Ingresso e pagamento</Title>
-      { !paymentPage ? (  !ticketTypeLoading && !getUserLoading && !getTicketLoading && (accessDenied ? (
-        <MessageContainer phrases={messageContainerPhrases} />
+      {!isLoading ? (
+        !paymentPage ? (
+          !ticketTypeLoading &&
+          !getUserLoading &&
+          !getTicketLoading &&
+          (accessDenied ? (
+            <MessageContainer phrases={messageContainerPhrases} />
+          ) : (
+            <>
+              <ModalityTicket ticketTypes={ticket} setHasSelected={setHasSelected} />
+              {(hasSelected.text === 'Presencial' ||
+                hasSelected.text === 'Sem Hotel' ||
+                hasSelected.text === 'Com Hotel') && (
+                <NotRemoteOptions
+                  ticketTypes={ticket}
+                  setHasSelected={setHasSelected}
+                  hasHotel={hasHotel}
+                  setHasHotel={setHasHotel}
+                  hasSelected={hasSelected}
+                />
+              )}
+              {(hasSelected.text === 'Online' ||
+                hasSelected.text === 'Sem Hotel' ||
+                hasSelected.text === 'Com Hotel') && (
+                <Confirmation
+                  ticketTypeId={hasSelected.id}
+                  price={ticket.filter((t) => t.id === hasSelected.id)[0].price}
+                  setPaymentPage={setPaymentPage}
+                />
+              )}
+            </>
+          ))
+        ) : (
+          <PaymentComponent
+            ticketInfo={ticketInfo}
+            price={ticket.filter((t) => t.id === hasSelected.id)[0]}
+            getTicket={getTicket}
+          />
+        )
       ) : (
-        <>
-          <ModalityTicket ticketTypes={ticket} setHasSelected={setHasSelected} />
-          {(hasSelected.text === 'Presencial' || hasSelected.text === 'Sem Hotel' || hasSelected.text === 'Com Hotel') && (
-            <NotRemoteOptions
-              ticketTypes={ticket}
-              setHasSelected={setHasSelected}
-              hasHotel={hasHotel}
-              setHasHotel={setHasHotel}
-              hasSelected={hasSelected}
-            />
-          )}
-          {(hasSelected.text === 'Online' || hasSelected.text === 'Sem Hotel' || hasSelected.text === 'Com Hotel') && (
-            <Confirmation
-              ticketTypeId={hasSelected.id}
-              price={ticket.filter((t) => t.id === hasSelected.id)[0].price}
-              setPaymentPage={setPaymentPage}
-            />
-          )}
-        </>
-      ))) :
-        <PaymentComponent
-          ticketInfo={ticketInfo}
-          price={ticket.filter((t) => t.id === hasSelected.id)[0]}
-          getTicket={getTicket}
-        /> }
+        <></>
+      )}
     </>
   );
 }

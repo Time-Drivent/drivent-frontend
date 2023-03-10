@@ -18,18 +18,21 @@ export default function PaymentComponent({ ticketInfo, getTicket, price }) {
   const [focus, setFocus] = useState('');
   const [pay, setPay] = useState(false);
   const [ticketId, setTicketId] = useState(undefined);
+  const [isLoading, setLoading] = useState(true);
 
-  useEffect(async() => {
+  // eslint-disable-next-line space-before-function-paren
+  useEffect(async () => {
     try {
       const ticket = await getTicket();
       if (ticket.status === 'PAID') {
         setPay(true);
       }
       setTicketId(ticket.id);
-    } catch(error) {
+    } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
     }
+    setLoading(false);
   }, []);
 
   async function handleSubmit(e) {
@@ -43,10 +46,7 @@ export default function PaymentComponent({ ticketInfo, getTicket, price }) {
     };
 
     try {
-      if (cvc.length !== 3 || 
-        (expiry.length < 4 || expiry.length > 5) ||
-        name.length < 6 ||
-        number.length !== 16) {
+      if (cvc.length !== 3 || expiry.length < 4 || expiry.length > 5 || name.length < 6 || number.length !== 16) {
         return toast('Dados do cartão incorreto!');
       }
       await savePayment(ticketId, cardData);
@@ -66,9 +66,11 @@ export default function PaymentComponent({ ticketInfo, getTicket, price }) {
   }
 
   return (
-    <>      
+    <>
       <>
-        <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>Ingresso escolhido</SubTitle>
+        <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>
+          Ingresso escolhido
+        </SubTitle>
 
         <TicketWrapper>
           <Info variant="subtitle1">{ticketInfo ? ticketInfo.TicketType.name : price.name}</Info>
@@ -77,20 +79,16 @@ export default function PaymentComponent({ ticketInfo, getTicket, price }) {
           </Info>
         </TicketWrapper>
 
-        <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>Pagamento</SubTitle>
+        <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>
+          Pagamento
+        </SubTitle>
 
-        {!pay ?
-          (
+        {!isLoading ? (
+          !pay ? (
             <>
               <PaymentCard>
                 <div>
-                  <Cards
-                    cvc={cvc}
-                    expiry={expiry}
-                    focused={focus}
-                    name={name}
-                    number={number}
-                  />
+                  <Cards cvc={cvc} expiry={expiry} focused={focus} name={name} number={number} />
                 </div>
 
                 <PaymentForm>
@@ -138,39 +136,43 @@ export default function PaymentComponent({ ticketInfo, getTicket, price }) {
 
               <Button onClick={handleSubmit}>FINALIZAR PAGAMENTO</Button>
             </>
-          )
-          :
-          (
+          ) : (
             <Paid>
               <IconContext.Provider
                 value={{
                   color: '#36B853',
                   className: 'global-class-name',
                   size: '50px',
-                }}>
-                <IoCheckmarkCircleSharp className='ion-icon' />
+                }}
+              >
+                <IoCheckmarkCircleSharp className="ion-icon" />
               </IconContext.Provider>
 
               <div>
-                <Info variant='body1' style={{ fontWeight: 700 }} >Pagamento Confirmado!</Info>
-                <Info variant='body1'>Prossiga para escolha de hospedagem e atividades</Info>
+                <Info variant="body1" style={{ fontWeight: 700 }}>
+                  Pagamento Confirmado!
+                </Info>
+                <Info variant="body1">Prossiga para escolha de hospedagem e atividades</Info>
               </div>
             </Paid>
-          )}      
-      </>      
+          )
+        ) : (
+          <></>
+        )}
+      </>
     </>
   );
-};
+}
 
 const SubTitle = styled(Typography)`
-  margin-bottom: 20px!important;
+  margin-bottom: 20px !important;
 `;
 
 const TicketWrapper = styled.div`
   width: 290px;
   height: 108px;
   border-radius: 20px;
-  background-color: #FFEED2;
+  background-color: #ffeed2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -187,8 +189,7 @@ const Paid = styled.div`
   }
 `;
 
-const Info = styled(Typography)`
-`;
+const Info = styled(Typography)``;
 
 const PaymentCard = styled.div`
   display: flex;
@@ -196,7 +197,7 @@ const PaymentCard = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
     width: 100px;
-    
+
     div {
       margin-bottom: 10px;
     }
@@ -218,13 +219,13 @@ const PaymentForm = styled.form`
     height: 45px;
     border-radius: 5px;
     border-width: 1px;
-    border-color: #8E8E8E;
+    border-color: #8e8e8e;
     font-size: 1.1rem;
   }
   input::placeholder {
-      color: #8E8E8E;
-      padding-left: 10px;
-    }
+    color: #8e8e8e;
+    padding-left: 10px;
+  }
   .expiry {
     width: 30%;
   }
