@@ -34,37 +34,25 @@ export default function SignIn() {
     try {
       signInWithPopup(auth, provider)    
         .then(async(result) => {
-          const userData = await signIn(result.user.email, result.user.uid);
-          setUserData(userData);
-          navigate('/dashboard');
-          toast('Login realizado com sucesso!');
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error.message);
-          toast('Não foi possível fazer o login!');
+          signUp(result.user.email, result.user.uid)
+            .then ( async(res) => {
+              const userData = await signIn(result.user.email, result.user.uid);
+              setUserData(userData);
+              navigate('/dashboard');
+              toast('Login realizado com sucesso!');
+            })
+            .catch(async(error) => {
+              const userData = await signIn(result.user.email, result.user.uid);
+              setUserData(userData);
+              navigate('/dashboard');
+              toast('Login realizado com sucesso!');
+            });
+        }
+        ).catch((error) => {
+          toast('Não foi possível fazer o login!', error);
         });
     } catch (err) {
-      toast('Não foi possível fazer o login!');
-    }
-  } 
-  async function submitUpGithub(event) {
-    const auth = getAuth();
-    event.preventDefault();
-    try {
-      signInWithPopup(auth, provider)    
-        .then(async(result) => {
-          await signUp(result.user.email, result.user.uid);
-          const userData = await signIn(result.user.email, result.user.uid);
-          setUserData(userData);
-          navigate('/dashboard');
-          toast('Login realizado com sucesso!');
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error.message);
-          toast('Usuario já Cadastrado!');
-        });
-    } catch (err) {
-      toast('Não foi possível fazer o Cadastro!');
+      toast('Não foi possível fazer login!', err);
     }
   }  
   
@@ -97,7 +85,6 @@ export default function SignIn() {
       </Row>
       <Row>
         <Link to="/enroll">Não possui login? Inscreva-se</Link>
-        <Button onClick={submitUpGithub} color="primary" fullWidth disabled={loadingSignUp}><FaGithub></FaGithub>Registrar</Button>
       </Row>
     </AuthLayout>
   );
