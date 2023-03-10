@@ -3,7 +3,7 @@ import useHotel from '../../hooks/api/useHotel';
 import HotelList from './HotelList';
 import { RoomList } from './RoomList';
 
-export default function HotelInformation() {
+export default function HotelInformation({ setBooked }) {
   const { hotels } = useHotel();
   const [hotelsData, setHotelsData] = useState([]);
   const [hotelIdselected, sethotelIdSelected] = useState(0);
@@ -27,6 +27,6 @@ export default function HotelInformation() {
 
   return <>
     <HotelList hotels={hotelsData} selected={hotelIdselected} handleSelect={handleSelect} setRooms={setRooms} />
-    <RoomList hotelIdselected={hotelIdselected} roomIdselected={roomIdselected} rooms={rooms} setRoomIdSelected={setRoomIdSelected} />
+    <RoomList hotelIdselected={hotelIdselected} roomIdselected={roomIdselected} rooms={rooms} setBooked={setBooked} setRoomIdSelected={setRoomIdSelected} />
   </>;
 }

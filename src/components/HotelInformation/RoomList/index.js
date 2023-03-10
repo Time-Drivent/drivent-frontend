@@ -4,13 +4,14 @@ import useSaveBooking from '../../../hooks/api/useSaveBooking';
 import { toast } from 'react-toastify';
 import { RoomItem } from './RoomItem';
 
-export function RoomList({ hotelIdselected, roomIdselected, rooms, setRoomIdSelected }) {
+export function RoomList({ hotelIdselected, roomIdselected, rooms, setBooked, setRoomIdSelected }) {
   const { saveBooking, saveBookingLoading } = useSaveBooking();
 
   async function handleSubmit() {
     try {
       await saveBooking({ roomId: roomIdselected });
       toast('Reserva feita com sucesso');
+      setBooked(true);
     } catch (error) {
       toast('Ocorreu um erro ao reservar o quarto');
     }
