@@ -15,12 +15,12 @@ export default function Countdown() {
 
   useEffect(() => {
     if (countdownOver) {
-      navigate('/enroll');
+      navigate('/sign-in');
     }
   }, [countdownOver]);
 
   function onZero() {
-    navigate('/enroll');
+    navigate('/sign-in');
   }
 
   if (loadingEventInfo) {
