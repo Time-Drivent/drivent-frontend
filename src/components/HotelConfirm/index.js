@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export default function HotelConfirm({ booking }) {
+export default function HotelConfirm({ booking, setChange }) {
   return (
     <Wrapper>
       <h1>Você já escolheu seu quarto:</h1>
@@ -24,7 +24,7 @@ export default function HotelConfirm({ booking }) {
         </Booking>
       </Container>
 
-      <Button>
+      <Button onClick={() => setChange(true)} >
         TROCAR DE QUARTO
       </Button>
 

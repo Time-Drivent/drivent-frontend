@@ -12,6 +12,8 @@ import { getUserBooking } from '../../../services/bookingApi';
 export default function Hotel() {
   const [booking, setBooking] = useState(undefined);
   const [booked, setBooked] = useState(false);
+  const [change, setChange] = useState(false);
+  const [changed, setChanged] = useState(false);
   const messageContainerPhrases = {
     noPayment: ['Você precisa ter confirmado pagamento antes', 'de fazer a escolha de hospedagem'],
     noHotel: ['Sua modalidade de ingresso não inclui hospedagem', 'Prossiga para a escolha de atividades'],
@@ -26,7 +28,7 @@ export default function Hotel() {
     getUserBooking(token).then((res) => {
       setBooking(res);
     });
-  }, [booked]);
+  }, [booked, changed]);
 
   // eslint-disable-next-line space-before-function-paren
   useEffect(async () => {
@@ -53,8 +55,8 @@ export default function Hotel() {
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-      {!booking ? <HotelInformation setBooked={setBooked} /> :
-        <HotelConfirm booking={booking} />
+      {(!booking || change) ? <HotelInformation changed={changed} setBooked={setBooked} setChange={setChange} setChanged={setChanged} /> :
+        <HotelConfirm booking={booking} setChange={setChange} />
       }
     </>
   );
