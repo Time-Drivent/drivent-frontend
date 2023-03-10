@@ -1,21 +1,35 @@
 import { Typography } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import HotelInformation from '../../../components/HotelInformation';
 import MessageContainer from '../../../components/MessageContainer';
 import { toast } from 'react-toastify';
 import useTicket from '../../../hooks/api/useTicket';
 import HotelConfirm from '../../../components/HotelConfirm';
+import UserContext from '../../../contexts/UserContext';
+import { getUserBooking } from '../../../services/bookingApi';
 
 export default function Hotel() {
-  const [booking, setbooking] = useState({});
+  const [booking, setBooking] = useState(undefined);
+  const [booked, setBooked] = useState(false);
+  const [change, setChange] = useState(false);
+  const [changed, setChanged] = useState(false);
   const messageContainerPhrases = {
     noPayment: ['Você precisa ter confirmado pagamento antes', 'de fazer a escolha de hospedagem'],
     noHotel: ['Sua modalidade de ingresso não inclui hospedagem', 'Prossiga para a escolha de atividades'],
     noTicket: ['Você precisa ter criado e pago seu ticket antes', 'de fazer a escolha de hospedagem'],
   };
   const [ticket, setTicket] = useState({});
-  const { getTicket, getTicketLoading } = useTicket();
+  const { getTicket } = useTicket();
+  const { userData } = useContext(UserContext);
+  const token = userData.token;
+  
+  useEffect(() => {
+    getUserBooking(token).then((res) => {
+      setBooking(res);
+    });
+  }, [booked, changed]);
+
   // eslint-disable-next-line space-before-function-paren
   useEffect(async () => {
     try {
@@ -26,6 +40,7 @@ export default function Hotel() {
       toast('Não foi possível encontrar as informações do seu Ticket');
     }
   }, []);
+
   return (
     <>
       <StyledTypography variant='h4'>Escolha de hotel e quarto</StyledTypography>
@@ -40,8 +55,10 @@ export default function Hotel() {
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-      {!booking ? <HotelInformation /> :
-        <HotelConfirm booking={booking} setbooking={setbooking} />
+      {
+        (!booking || change) ?
+          <HotelInformation booking={booking} change={change} changed={changed} setBooked={setBooked} setChange={setChange} setChanged={setChanged} />
+          : <HotelConfirm booking={booking} setChange={setChange} />
       }
     </>
   );

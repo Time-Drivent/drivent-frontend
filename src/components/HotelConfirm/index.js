@@ -1,28 +1,14 @@
 import styled from 'styled-components';
-import { useState, useContext, useEffect } from 'react';
-import UserContext from '../../contexts/UserContext';
-import useBooking from '../../hooks/api/useBooking';
-import { getUserBooking } from '../../services/bookingApi';
-import Hotel from '../../pages/Dashboard/Hotel';
 
-export default function HotelConfirm({ booking, setbooking }) {
-  const [hotel, setHotel] = useState({});
-  const { userData } = useContext(UserContext);
-  const token = userData.token;
-  useEffect(() => {
-    getUserBooking(token).then((res) => {
-      setbooking(res);
-      setHotel(res.Room.Hotel);
-    });
-  }, []);
+export default function HotelConfirm({ booking, setChange }) {
   return (
     <Wrapper>
       <h1>Você já escolheu seu quarto:</h1>
       <Container>
         <Booking>
-          <img src={hotel.image} alt={'hotel'} />
+          <img src={booking.Room?.Hotel.image} alt={'hotel'} />
           <div>
-            <h2>{hotel.name}</h2>
+            <h2>{booking.Room?.Hotel.name}</h2>
             <h3>Quarto reservado</h3>
             <h4>
               {booking.Room?.name}
@@ -38,7 +24,7 @@ export default function HotelConfirm({ booking, setbooking }) {
         </Booking>
       </Container>
 
-      <Button>
+      <Button onClick={() => setChange(true)} >
         TROCAR DE QUARTO
       </Button>
 
