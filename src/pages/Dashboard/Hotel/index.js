@@ -20,7 +20,7 @@ export default function Hotel() {
     noTicket: ['Você precisa ter criado e pago seu ticket antes', 'de fazer a escolha de hospedagem'],
   };
   const [ticket, setTicket] = useState({});
-  const { getTicket, getTicketLoading } = useTicket();
+  const { getTicket } = useTicket();
   const { userData } = useContext(UserContext);
   const token = userData.token;
   
@@ -55,8 +55,10 @@ export default function Hotel() {
       ) : (
         <MessageContainer phrases={messageContainerPhrases.noPayment} />
       )}
-      {(!booking || change) ? <HotelInformation changed={changed} setBooked={setBooked} setChange={setChange} setChanged={setChanged} /> :
-        <HotelConfirm booking={booking} setChange={setChange} />
+      {
+        (!booking || change) ?
+          <HotelInformation booking={booking} change={change} changed={changed} setBooked={setBooked} setChange={setChange} setChanged={setChanged} />
+          : <HotelConfirm booking={booking} setChange={setChange} />
       }
     </>
   );

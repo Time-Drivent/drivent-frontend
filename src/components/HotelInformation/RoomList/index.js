@@ -1,19 +1,26 @@
 import styled from 'styled-components';
 import Button from '../../Form/Button';
 import useSaveBooking from '../../../hooks/api/useSaveBooking';
+import useChangeBooking from '../../../hooks/api/useChangeBooking';
 import { toast } from 'react-toastify';
 import { RoomItem } from './RoomItem';
 
-export function RoomList({ changed, hotelIdselected, roomIdselected, rooms, setBooked, setChange, setChanged, setRoomIdSelected }) {
+export function RoomList({ booking, change, changed, hotelIdselected, roomIdselected, rooms, setBooked, setChange, setChanged, setRoomIdSelected }) {
   const { saveBooking, saveBookingLoading } = useSaveBooking();
+  const { changeBooking, changeBookingLoading } = useChangeBooking();
 
   async function handleSubmit() {
     try {
-      await saveBooking({ roomId: roomIdselected });
-      toast('Reserva feita com sucesso');
-      setBooked(true);
-      setChange=(false);
-      setChanged(!changed);
+      if (change) {
+        await changeBooking(booking.bookingId, { roomId: roomIdselected });
+        toast('Reserva alterada com sucesso');
+        setChange(false);
+        setChanged(!changed);
+      } else {
+        await saveBooking({ roomId: roomIdselected });
+        toast('Reserva feita com sucesso');
+        setBooked(true);
+      }
     } catch (error) {
       toast('Ocorreu um erro ao reservar o quarto');
     }
@@ -44,7 +51,7 @@ export function RoomList({ changed, hotelIdselected, roomIdselected, rooms, setB
       }
       {
         roomIdselected ?
-          <Button type="submit" disabled={saveBookingLoading} onClick={handleSubmit}>
+          <Button type="submit" disabled={saveBookingLoading || changeBookingLoading} onClick={handleSubmit}>
             RESERVAR QUARTO
           </Button> :
           ''

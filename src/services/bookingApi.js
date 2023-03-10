@@ -1,5 +1,14 @@
 import api from './api';
 
+export async function changeBooking(param, body, token) {
+  const booking = await api.put(`/booking/${param}`, body, {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return booking.data;
+}
+
 export async function getBooking(token) {
   const booking = await api.get('/booking', {
     headers: {
