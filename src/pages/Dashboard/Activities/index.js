@@ -11,6 +11,7 @@ export default function Activities() {
   const { getDay, getDayLoading } = useDay();
   const [Component, setComponent] = useState(null);
   const [days, setDays] = useState([]);
+  const [selectedDayId, setSelectedDayId] = useState();
 
   // eslint-disable-next-line space-before-function-paren
   useEffect(async () => {
@@ -38,6 +39,10 @@ export default function Activities() {
     }
   }, []);
 
+  function handleDaySelection(id) {
+    setSelectedDayId(id);
+  }
+
   return (
     <>
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
@@ -46,7 +51,7 @@ export default function Activities() {
       <DaysList>
         {days.map((day) => {
           return (
-            <Day key={day.date}>
+            <Day key={day.date} selectedDayId={selectedDayId} dayId={day.id} onClick={() => handleDaySelection(day.id)}>
               <h1>
                 {`${day.weekday}, ${new Date(day.date).toLocaleDateString('pt-br', {
                   day: 'numeric',
@@ -76,7 +81,7 @@ const Day = styled.div`
   align-items: center;
   width: 131px;
   height: 37px;
-  background: #e0e0e0;
+  background: ${(props) => (props.selectedDayId === props.dayId ? '#FFD37D' : '#e0e0e0')};
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   h1 {
