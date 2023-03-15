@@ -16,7 +16,8 @@ export default function HotelInformation({ booking, change, changed, setBooked, 
     setRoomIdSelected(0);
   }
 
-  useEffect(async() => {
+  // eslint-disable-next-line space-before-function-paren
+  useEffect(async () => {
     try {
       const response = await hotels();
       setHotelsData(() => response);
@@ -25,19 +26,21 @@ export default function HotelInformation({ booking, change, changed, setBooked, 
     }
   }, []);
 
-  return <>
-    <HotelList hotels={hotelsData} selected={hotelIdselected} handleSelect={handleSelect} setRooms={setRooms} />
-    <RoomList
-      booking={booking}
-      change={change}
-      changed={changed}
-      hotelIdselected={hotelIdselected}
-      roomIdselected={roomIdselected}
-      rooms={rooms}
-      setBooked={setBooked}
-      setChange={setChange}
-      setChanged={setChanged}
-      setRoomIdSelected={setRoomIdSelected}
-    />
-  </>;
+  return (
+    <>
+      <HotelList hotels={hotelsData} selected={hotelIdselected} handleSelect={handleSelect} setRooms={setRooms} />
+      <RoomList
+        booking={booking}
+        change={change}
+        changed={changed}
+        hotelIdselected={hotelIdselected}
+        roomIdselected={roomIdselected}
+        rooms={rooms}
+        setBooked={setBooked}
+        setChange={setChange}
+        setChanged={setChanged}
+        setRoomIdSelected={setRoomIdSelected}
+      />
+    </>
+  );
 }
