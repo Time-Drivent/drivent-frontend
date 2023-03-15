@@ -3,7 +3,7 @@ import useTicket from '../../../hooks/api/useTicket';
 import { useEffect, useState } from 'react';
 import MessageContainer from '../../../components/MessageContainer';
 import ActivitiesInformation from '../../../components/ActivitiesInformation';
-import useDay from '../../../hooks/api/useDay';
+// import useDay from '../../../hooks/api/useDay';
 import styled from 'styled-components';
 
 export default function Activities() {
@@ -30,6 +30,7 @@ export default function Activities() {
 
       setComponent(() => <ActivitiesInformation />);
     } catch (error) {
+    // eslint-disable-next-line no-console
       console.log(error);
     }
   }, []);
