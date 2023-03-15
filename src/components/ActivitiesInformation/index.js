@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import useDay from '../../hooks/api/useDay';
 import styled from 'styled-components';
+import EventsPanel from '../EventsPanel';
 
 export default function ActivitiesInformation() {
   // eslint-disable-next-line no-unused-vars
@@ -39,6 +40,7 @@ export default function ActivitiesInformation() {
         );
       })}
     </DaysList>
+    <EventsPanel eventDaysId={selectedDayId}/>
   </>;
 }
 
