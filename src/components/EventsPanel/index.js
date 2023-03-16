@@ -39,7 +39,7 @@ export default function EventsPanel({ eventDaysId }) {
   
   function isSubscribed(Reservation) {
     for (let i = 0; i < Reservation.length; i++) {
-      if (Reservation[i].userId === userData.id) {
+      if (Reservation[i].userId === userData.user.id) {
         return true;
       }
     }
@@ -60,7 +60,7 @@ export default function EventsPanel({ eventDaysId }) {
                 <SubscribeButton
                   key={i.id}
                   isSubscribed={isSubscribed(i.Reservation)}
-                  availableSpots={i.capacity}
+                  availableSpots={i.capacity - i.Reservation.length}
                   activityId={i.id}
                   update={update}
                   setUpdate={setUpdate} />
