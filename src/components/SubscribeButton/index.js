@@ -35,7 +35,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
   }
   return (
     <>
-      <Container>
+      <Container subscribe={subscribe} availableSpots={availableSpots} >
         {
           !subscribe ?
             (
@@ -65,6 +65,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
 }
 
 const Container = styled.div`
+  cursor: ${props => (!props.subscribe && props.availableSpots) && 'pointer'};
   width: 100% !important;
   display: flex;
   flex-direction: column;
