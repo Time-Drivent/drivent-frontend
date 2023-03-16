@@ -28,50 +28,43 @@ export default function EventsPanel({ eventDaysId }) {
       getDayEvents();
     }
   }, [eventDaysId, update]);
-
   if(!eventData) return '';
-
-  function isSubscribed(bookingArray) {
-    for (const element of bookingArray) {
-      if (element.userId === userData.user.id) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
+  
   function getBoxSize(startTime, endTime) {
     const startNumber = Number(startTime.slice(0, 2));
     const endNumber = Number(endTime.slice(0, 2));
-
     return ((endNumber - startNumber)* 80);
   }
-
+  
+  function isSubscribed(Reservation) {
+    for (let i = 0; i < Reservation.length; i++) {
+      if (Reservation[i].userId === userData.id) {
+        return true;
+      }
+    }
+    return false;
+  }
   return(
     <Main>
       {eventData.map((i, index) => 
         (<SubMain key={index} >
-          <h2 key={index}>{i.name}</h2>
-          <EventsContainer key={index}>
-            {i.Activities.map((item, index) => 
-              (<Aside key={index} backgroundColor={isSubscribed(item.ActivitiesBooking)} boxSize={getBoxSize(item.startTime, item.endTime)}>
-                <div key={index}>
-                  <h3 key={index}>{item.name}</h3>
-                  <p key={index}>{item.startTime} - {item.endTime}</p>
-                </div>
-                
-                <header key={index}>
-                  <SubscribeButton
-                    key={item.id}
-                    isSubscribed={isSubscribed(item.ActivitiesBooking)}
-                    availableSpots={item.maxQuantity-item.ActivitiesBooking.length}
-                    activityId={item.id}
-                    update={update}
-                    setUpdate={setUpdate} />
-                </header>
-              </Aside>)
-            )}
+          <h2>{i.Venue.name}</h2>
+          <EventsContainer>
+            <Aside key={index} backgroundColor={isSubscribed(i.Reservation)} boxSize={getBoxSize(i.startTime, i.endTime)}>
+              <div>
+                <h3>{i.name}</h3>
+                <p>{i.startTime} - {i.endTime}</p>
+              </div>
+              <header>
+                <SubscribeButton
+                  key={i.id}
+                  isSubscribed={isSubscribed(i.Reservation)}
+                  availableSpots={i.capacity}
+                  activityId={i.id}
+                  update={update}
+                  setUpdate={setUpdate} />
+              </header>
+            </Aside>
           </EventsContainer>
         </SubMain>)
       )}
@@ -81,7 +74,7 @@ export default function EventsPanel({ eventDaysId }) {
 
 const Main = styled.main`
   width: 100%;
-  height: 122%;
+  height: 74%;
   display: flex;
   align-items:flex-start;
   justify-content: flex-start;
@@ -119,6 +112,8 @@ const EventsContainer = styled.nav`
     padding: 11px 14px 10px 11px;
     gap: 9px;
     height: 100%;
+    min-height: 265px;
+    line-height: normal;
     overflow-y: scroll;
     ::-webkit-scrollbar {
       width: 4px;
@@ -138,6 +133,8 @@ const EventsContainer = styled.nav`
 
 const Aside = styled.div`
     width: 265px;
+    max-height: 100px;
+    height: 80px;
     min-height: ${props => (props.boxSize)}px;
     background-color: ${props => (props.backgroundColor ? '#D0FFDB' : '#F1F1F1')} !important; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
     border-radius: 5px;
