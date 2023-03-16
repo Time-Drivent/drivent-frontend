@@ -5,6 +5,7 @@ import { getEvents } from '../../services/activityApi';
 import { useContext, useEffect, useState } from 'react';
 import SubscribeButton from '../SubscribeButton';
 import UserContext from '../../contexts/UserContext';
+import dayjs from 'dayjs';
 
 export default function EventsPanel({ eventDaysId }) {
   const token = useToken();
@@ -50,10 +51,10 @@ export default function EventsPanel({ eventDaysId }) {
         (<SubMain key={index} >
           <h2>{i.Venue.name}</h2>
           <EventsContainer>
-            <Aside key={index} backgroundColor={isSubscribed(i.Reservation)} boxSize={getBoxSize(i.startTime, i.endTime)}>
+            <Aside key={index} backgroundColor={isSubscribed(i.Reservation)} boxSize={getBoxSize(dayjs(i.startTime).format('HH:mm'), dayjs(i.endTime).format('HH:mm'))}>
               <div>
                 <h3>{i.name}</h3>
-                <p>{i.startTime} - {i.endTime}</p>
+                <p>{dayjs(i.startTime).format('HH:mm')} - {dayjs(i.endTime).format('HH:mm')}</p>
               </div>
               <header>
                 <SubscribeButton
