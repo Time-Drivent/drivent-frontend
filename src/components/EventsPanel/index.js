@@ -133,8 +133,6 @@ const EventsContainer = styled.nav`
 
 const Aside = styled.div`
     width: 265px;
-    max-height: 100px;
-    height: 80px;
     min-height: ${props => (props.boxSize)}px;
     background-color: ${props => (props.backgroundColor ? '#D0FFDB' : '#F1F1F1')} !important; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
     border-radius: 5px;
