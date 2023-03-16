@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import useDay from '../../hooks/api/useDay';
 import styled from 'styled-components';
+import EventsPanel from '../EventsPanel';
 
 export default function ActivitiesInformation() {
+  // eslint-disable-next-line no-unused-vars
   const { getDay, getDayLoading } = useDay();
   const [days, setDays] = useState([]);
   const [selectedDayId, setSelectedDayId] = useState();
@@ -16,6 +18,7 @@ export default function ActivitiesInformation() {
       const daysAux = await getDay();
       setDays([...daysAux]);
     } catch(error) {
+      // eslint-disable-next-line no-console
       console.log(error);
     }
   }, []);
@@ -37,6 +40,7 @@ export default function ActivitiesInformation() {
         );
       })}
     </DaysList>
+    <EventsPanel eventDaysId={selectedDayId}/>
   </>;
 }
 

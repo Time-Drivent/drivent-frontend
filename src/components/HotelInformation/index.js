@@ -22,6 +22,7 @@ export default function HotelInformation({ booking, change, changed, setBooked, 
       const response = await hotels();
       setHotelsData(() => response);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Erro');
     }
   }, []);
