@@ -39,7 +39,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
         {
           !subscribe ?
             (
-              availableSpots ?
+              availableSpots > 0 ?
                 (
                   <span onClick={() => { subscribeActivity(); }} disabled={isDisabled}>
                     <LoginOutlinedIcon sx={{ fontSize: 30, color: green[600] }} />
@@ -50,7 +50,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
                 (
                   <>
                     <HighlightOffRoundedIcon sx={{ fontSize: 30, color: red[600] }} />
-                    <Spots color={availableSpots}>Esgotado</Spots>
+                    <Spots color={availableSpots = 0}>Esgotado</Spots>
                   </>
                 )
             )
@@ -65,7 +65,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
 }
 
 const Container = styled.div`
-  cursor: ${props => (!props.subscribe && props.availableSpots) && 'pointer'};
+  cursor: ${props => (!props.subscribe && props.availableSpots > 0) && 'pointer'};
   width: 100% !important;
   display: flex;
   flex-direction: column;
