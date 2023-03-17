@@ -16,7 +16,17 @@ export default function EventsPanel({ eventDaysId }) {
   async function getDayEvents() {
     try {
       const events = await getEvents(token, eventDaysId);
-      setEventData(events);
+      const hashtable = {};
+      for (let i = 0; i < events.length; i++) {
+        const venueId = events[i].Venue.id;
+        if (!hashtable[venueId]) {
+          hashtable[venueId] = { Venue: events[i].Venue, Activity: [] };
+        }
+        hashtable[venueId].Activity.push(events[i]);
+      }
+      const eventData = Object.values(hashtable);
+      setEventData(eventData);
+      console.log(eventData);
     }catch(error) {
       return toast('Desculpe, houve um erro.');
     }
@@ -34,7 +44,7 @@ export default function EventsPanel({ eventDaysId }) {
   function getBoxSize(startTime, endTime) {
     const startNumber = Number(startTime.slice(0, 2));
     const endNumber = Number(endTime.slice(0, 2));
-    return ((endNumber - startNumber)* 80);
+    return ((endNumber - startNumber)* 80 + 9 * (endNumber - startNumber - 1));
   }
   
   function isSubscribed(Reservation) {
@@ -51,21 +61,24 @@ export default function EventsPanel({ eventDaysId }) {
         (<SubMain key={index} >
           <h2>{i.Venue.name}</h2>
           <EventsContainer>
-            <Aside key={index} backgroundColor={isSubscribed(i.Reservation)} boxSize={getBoxSize(dayjs(i.startTime).format('HH:mm'), dayjs(i.endTime).format('HH:mm'))}>
-              <div>
-                <h3>{i.name}</h3>
-                <p>{dayjs(i.startTime).format('HH:mm')} - {dayjs(i.endTime).format('HH:mm')}</p>
-              </div>
-              <header>
-                <SubscribeButton
-                  key={i.id}
-                  isSubscribed={isSubscribed(i.Reservation)}
-                  availableSpots={i.capacity - i.Reservation.length}
-                  activityId={i.id}
-                  update={update}
-                  setUpdate={setUpdate} />
-              </header>
-            </Aside>
+            {i.Activity.map((i, index) =>
+              (
+                <Aside key={index} backgroundColor={isSubscribed(i.Reservation)} boxSize={getBoxSize(dayjs(i.startTime).format('HH:mm'), dayjs(i.endTime).format('HH:mm'))}>
+                  <div>
+                    <h3>{i.name}</h3>
+                    <p>{dayjs(i.startTime).format('HH:mm')} - {dayjs(i.endTime).format('HH:mm')}</p>
+                  </div>
+                  <header>
+                    <SubscribeButton
+                      key={i.id}
+                      isSubscribed={isSubscribed(i.Reservation)}
+                      availableSpots={i.capacity - i.Reservation.length}
+                      activityId={i.id}
+                      update={update}
+                      setUpdate={setUpdate} />
+                  </header>
+                </Aside>
+              ))}
           </EventsContainer>
         </SubMain>)
       )}
