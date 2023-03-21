@@ -26,7 +26,6 @@ export default function EventsPanel({ eventDaysId }) {
       }
       const eventData = Object.values(hashtable);
       setEventData(eventData);
-      console.log(eventData);
     }catch(error) {
       return toast('Desculpe, houve um erro.');
     }
